@@ -1,0 +1,31 @@
+<?php
+include 'conexion.php';
+
+$sql = "SELECT s.id, s.num_control, s.id_libro, s.fecha, s.estado, l.titulo 
+        FROM solicitudes s
+        JOIN libros l ON s.id_libro = l.id
+        ORDER BY s.fecha DESC";
+
+$result = $conn->query($sql);
+
+if ($result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+        echo "<tr>";
+        echo "<td>" . htmlspecialchars($row['id']) . "</td>";
+        echo "<td>" . htmlspecialchars($row['num_control']) . "</td>";
+        echo "<td>" . htmlspecialchars($row['titulo']) . "</td>";
+        echo "<td>" . htmlspecialchars($row['fecha']) . "</td>";
+        echo "<td>" . htmlspecialchars($row['estado']) . "</td>";
+        echo "<td>";
+        // Aquí puedes poner botones para aceptar/rechazar la solicitud, por ejemplo:
+        echo "<button onclick='procesarSolicitud(" . $row['id'] . ", \"aceptar\")'>Aceptar</button> ";
+        echo "<button onclick='procesarSolicitud(" . $row['id'] . ", \"rechazar\")'>Rechazar</button>";
+        echo "</td>";
+        echo "</tr>";
+    }
+} else {
+    echo "<tr><td colspan='6'>No hay solicitudes pendientes.</td></tr>";
+}
+
+$conn->close();
+?>
